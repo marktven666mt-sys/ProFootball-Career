@@ -456,3 +456,51 @@ updateHome();
 </main>
 </body>
 </html>
+<script>
+(()=>{
+  const divOf=club=>{
+    for(const n of Object.keys(lowerDivisions||{}))for(const d of Object.keys(lowerDivisions[n]||{}))if((lowerDivisions[n][d].clubs||[]).includes(club))return Number(d);
+    return 1;
+  };
+  const divName=d=>"Division "+d;
+  const scoutDiv=()=>s.ovr<60?3:(s.ovr<80?(Math.random()<.12?1:2):2);
+  const scoutPool=()=>{
+    const d=Math.min(3,scoutDiv()),out=[];
+    for(const n of Object.keys(lowerDivisions||{}))if(n!==s.nation)out.push(...(lowerDivisions[n]?.[d]?.clubs||[]));
+    return [...new Set(out)].filter(c=>c!==s.club);
+  };
+  function scoutOffer(){
+    if(!s||s.season===1&&s.firstSeasonOfferSent)return;
+    if(Math.random()>.16)return;
+    let pool=scoutPool();if(!pool.length)return;
+    const club=pool[Math.floor(Math.random()*pool.length)],d=divOf(club),w=Math.round((s.wage||10000)*(0.85+Math.random()*.5));
+    s.firstSeasonOfferSent=s.season===1;s.incomingOffer={club,division:d,wage:w};
+    addMail("📡 Scout offer",club+" found you through scouting. "+divName(d)+" • Initial wage $"+w.toLocaleString()+"/week.");
+    save();draw();
+  }
+  const createBtn=$("createPlayer"),age=$("age"),division=$("division");
+  if(division?.parentElement)division.parentElement.remove();
+  createBtn.onclick=()=>{
+    const name=$("pname").value.trim()||"Player",number=Math.max(1,Math.min(99,Number($("number").value)||14)),a=Math.max(15,Math.min(22,Number(age.value)||18));
+    s={name,age:a,number,nation:$("nation").value,position:$("position").value,division:1,club:null,season:1,matches:0,g:0,a:0,seasonM:0,seasonG:0,seasonA:0,ovr:68,pace:82,shoot:65,pass:61,drib:79,skillPoints:0,stamina:100,tablePos:1,points:0,gd:0,won:0,drawn:0,lost:0,fixtures:[],fixtureIndex:0,contractYears:1,wage:10000,opponent:"",firstSeasonOfferSent:false};
+    offered=randomThree(footballWorld[s.nation]?.clubs||[]);
+    $("clubIntro").textContent="Choose your starting club. Every team shows its division.";
+    $("clubChoices").innerHTML="";
+    offered.forEach(c=>{const d=divOf(c),b=document.createElement("button");b.className="secondary club";b.innerHTML='<div class="clubRow">'+clubBadge(c)+'<b>'+c+'</b></div><span class="small">'+divName(d)+" • Start your professional career here</span>";b.onclick=()=>{s.club=c;s.division=d;s.fixtures=buildFixtures();s.fixtureIndex=0;s.opponent=pickOpponent();initializeLeague();save();draw();show("career")};$("clubChoices").appendChild(b)});
+    show("clubs");
+  };
+  const oldShowTransfer=showTransferOffers;
+  window.showTransferOffers=()=>{
+    if(s.season===1&&s.firstSeasonOfferSent){$("transferChoices").innerHTML="<p class='small'>Your one first-season outside-national offer has already been used. More clubs can find you in later seasons.</p>";show("transferScreen");return}
+    oldShowTransfer();
+    document.querySelectorAll("#transferChoices .club").forEach(b=>{const c=b.textContent.trim().split("\n")[0],sm=b.querySelector(".small");if(sm)sm.innerHTML=divName(divOf(c))+" • Scouted based on OVR "+s.ovr+" • negotiate"});
+  };
+  const oldFinish=finishMatch;
+  window.finishMatch=function(){oldFinish();if(s&&s.seasonM>=3)scoutOffer()};
+  const oldStart=startNextSeason;
+  window.startNextSeason=function(club){oldStart(club);s.age=(Number(s.age)||18)+1;if(s.age>=34){s.pace=Math.max(40,s.pace-1);s.shoot=Math.max(40,s.shoot-(Math.random()<.5?1:0));s.pass=Math.max(40,s.pass-(Math.random()<.35?1:0));s.drib=Math.max(40,s.drib-(Math.random()<.65?1:0));s.ovr=Math.max(40,Math.floor((s.pace+s.shoot+s.pass+s.drib)/4));s.skillPoints=0;addMail("⌛ Veteran decline",s.name+" is "+s.age+". Attributes can no longer be upgraded and natural decline has started.")}save();draw()};
+  document.querySelectorAll("[data-upgrade]").forEach(b=>{const old=b.onclick;b.onclick=e=>{if(Number(s?.age||0)>=34){$("log").textContent="Age 34+: attributes cannot be upgraded.";return}old(e)}});
+  const oldDraw=draw;window.draw=function(){oldDraw();document.querySelectorAll("[data-upgrade]").forEach(b=>{const v=Number(s?.age||0)>=34;b.disabled=v;b.style.opacity=v?".45":"1"})};
+  if(s&&Number(s.age)>=34)s.skillPoints=0;
+})();
+</script>
