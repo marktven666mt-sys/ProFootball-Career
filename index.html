@@ -72,7 +72,6 @@ body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{dis
         <option>Brazil</option><option>Argentina</option><option>Armenia</option><option>France</option><option>England</option><option>Spain</option><option>Portugal</option><option>Germany</option><option>Italy</option><option>Netherlands</option><option>Belgium</option><option>Turkey</option><option>Scotland</option><option>Austria</option><option>Switzerland</option><option>Greece</option><option>Denmark</option><option>Norway</option><option>Sweden</option><option>Poland</option><option>Ukraine</option><option>Mexico</option><option>Canada</option><option>USA</option><option>Japan</option><option>South Korea</option><option>Australia</option><option>Saudi Arabia</option><option>Morocco</option><option>South Africa</option>
       </select></div>
       <div><label>Position</label><select id="position"><option>LW</option><option>RW</option><option>ST</option><option>CAM</option><option>CM</option><option>LM</option><option>RM</option></select></div>
-      <div><label>League Division</label><select id="division"><option value="1">Division 1</option><option value="2">Division 2</option><option value="3">Division 3</option></select></div>
     </div>
     <button class="primary" style="width:100%;margin-top:16px" id="createPlayer">CONTINUE</button>
   </div>
@@ -217,7 +216,7 @@ body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{dis
   <div class="card">
     <label>Master Volume: <span id="volumeText">70%</span></label>
     <input id="volume" type="range" min="0" max="100" value="70">
-    <p class="small" style="margin-top:16px">No other settings yet.</p>
+    <p class="small" style="margin-top:16px">No other settings are available yet.</p>
   </div>
 </section>
 
@@ -322,7 +321,7 @@ function endSeason(){
 function startNextSeason(club){
  s.club=club;s.teams=s.teams||[];if(!s.teams.includes(club))s.teams.push(club);s.season++;s.seasonM=0;s.seasonG=0;s.seasonA=0;s.points=0;s.gd=0;s.won=0;s.drawn=0;s.lost=0;s.fixtureIndex=0;s.fixtures=buildFixtures();s.opponent=pickOpponent();initializeLeague();save();draw();show("career");
 }
-$("newCareer").onclick=()=>{s=null;localStorage.removeItem(slotKey(activeSlot));$("pname").value="";$("number").value=14;$("age").value=18;$("division").value=1;show("create")};
+$("newCareer").onclick=()=>{s=null;localStorage.removeItem(slotKey(activeSlot));$("pname").value="";$("number").value=14;$("age").value=18;show("create")};
 $("continueBtn").onclick=()=>{if(s){draw();show("career")}else show("create")};
 $("settingsBtn").onclick=()=>show("settings");
 document.querySelectorAll(".backHome").forEach(b=>b.onclick=()=>{updateHome();show("home")});
