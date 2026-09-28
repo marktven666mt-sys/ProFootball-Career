@@ -41,6 +41,9 @@ label{display:block;font-size:13px;color:#aebbb5;margin-bottom:6px}input,select{
 <style>
 body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{display:inline-block;margin-top:14px;padding:8px 14px;border:1px solid #435149;border-radius:999px;background:#101613;color:#7dffab;font-size:12px;font-weight:900;letter-spacing:1.2px}.steamPanel{margin:18px auto 0;max-width:760px;padding:12px 16px;border:1px solid #26382c;border-radius:12px;background:#0b100d;color:#aebbb5}.desktopHint{font-size:12px;color:#7dffab;margin-top:8px}
 @media(min-width:900px){.hero{padding:70px 10px 38px}.hero h1{font-size:58px}.card{padding:24px}.pitch{padding:28px}.momentField{height:300px}.menu{max-width:620px}}
+.zone-champion{background:#6b5b00!important;color:#fff}.zone-ucl{background:#164a8a!important;color:#fff}.zone-uel{background:#8b4a00!important;color:#fff}.zone-ucel{background:#65ff00!important;color:#07160d}.zone-promo{background:#167a3a!important;color:#fff}.zone-relegation{background:#7d2020!important;color:#fff}.zone-champion td,.zone-ucl td,.zone-uel td,.zone-ucel td,.zone-promo td,.zone-relegation td{border-bottom-color:#334039}.zone-label{font-size:11px;font-weight:900;margin-left:6px}
+.squadGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}.squadPlayer{padding:14px;border:1px solid #334039;border-radius:12px;background:#18211e}.squadPlayer .ov{font-size:22px;font-weight:900}.negOffer{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;padding:14px;border:1px solid #334039;border-radius:12px;background:#18211e;margin:8px 0}
+@media(max-width:600px){.squadGrid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -64,9 +67,9 @@ body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{dis
     <div class="grid">
       <div><label>Player name</label><input id="pname" maxlength="22" placeholder="Enter name"></div>
       <div><label>Shirt number</label><input id="number" type="number" min="1" max="99" value="14"></div>
-      <div><label>Age</label><input id="age" type="number" min="15" max="22" value="18"></div>
+      <div><label>Age</label><select id="age"><option value="15">15</option><option value="16">16</option><option value="17">17</option><option value="18" selected>18</option><option value="19">19</option><option value="20">20</option><option value="21">21</option><option value="22">22</option></select></div>
       <div><label>Nationality</label><select id="nation">
-        <option>Brazil</option><option>Argentina</option><option>Armenia</option><option>France</option><option>England</option><option>Spain</option><option>Portugal</option><option>Germany</option><option>Italy</option><option>Netherlands</option><option>USA</option>
+        <option>Brazil</option><option>Argentina</option><option>Armenia</option><option>France</option><option>England</option><option>Spain</option><option>Portugal</option><option>Germany</option><option>Italy</option><option>Netherlands</option><option>Belgium</option><option>Turkey</option><option>Scotland</option><option>Austria</option><option>Switzerland</option><option>Greece</option><option>Denmark</option><option>Norway</option><option>Sweden</option><option>Poland</option><option>Ukraine</option><option>Mexico</option><option>Canada</option><option>USA</option><option>Japan</option><option>South Korea</option><option>Australia</option><option>Saudi Arabia</option><option>Morocco</option><option>South Africa</option>
       </select></div>
       <div><label>Position</label><select id="position"><option>LW</option><option>RW</option><option>ST</option><option>CAM</option><option>CM</option><option>LM</option><option>RM</option></select></div>
       <div><label>League Division</label><select id="division"><option value="1">Division 1</option><option value="2">Division 2</option><option value="3">Division 3</option></select></div>
@@ -132,7 +135,7 @@ body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{dis
   </div>
   <div class="card" style="margin-top:14px"><div class="top"><h3 style="margin:0">📨 Inbox</h3><b id="unreadCount">0</b></div><div id="inbox"></div></div>
   <div class="card" style="margin-top:14px"><h3>📰 World Football News</h3><div id="news"></div></div>
-  <div class="card" style="margin-top:14px"><h3>🔄 Transfer Market</h3><p id="transferWindowStatus" class="small"></p><button class="secondary" id="requestTransfer">REQUEST TRANSFER</button></div>
+  <div class="card" style="margin-top:14px"><h3>🔄 Transfer Market</h3><p id="transferWindowStatus" class="small"></p><button class="secondary" id="requestTransfer">REQUEST TRANSFER</button><button class="secondary" id="squadHubBtn" style="width:100%;margin-top:10px">👥 SQUAD HUB</button><button class="primary" id="saveCareerBtn" style="width:100%;margin-top:10px">💾 SAVE CAREER</button></div>
   <div class="card" style="margin-top:14px"><h3>👤 Player Portfolio</h3><p class="small">Trophies, career stats and teams.</p><button class="primary" id="portfolioBtn" style="width:100%">OPEN PORTFOLIO</button></div>
   <div class="navGrid"><button class="secondary" id="trainingPageBtn">⚡ Training</button><button class="secondary" id="inboxPageBtn">📨 Emails</button><button class="secondary" id="newsPageBtn">📰 News</button><button class="secondary" id="careerPageBtn">⚽ Career</button></div>
 </section>
@@ -177,7 +180,8 @@ body{background:#050706}.app{max-width:1180px;background:#050706}.steamBadge{dis
 </section>
 
 <section id="seasonEnd" class="screen">
-  <div class="hero"><h1>Season Complete</h1><p id="summary"></p></div>  <div class="card">
+  <div class="hero"><h1>Season Complete</h1><p id="summary"></p></div>
+  <div class="card">
     <div class="stats">
       <div class="stat">Matches<br><span class="big" id="endM">0</span></div>
       <div class="stat">Goals<br><span class="big" id="endG">0</span></div>
@@ -352,6 +356,102 @@ $("careerSettings").onclick=()=>show("settings");
 $("volume").oninput=e=>$("volumeText").textContent=e.target.value+"%";
 window.selectSlot=selectSlot;
 updateHome();
+</script>
+<script>
+/* Career expansion update: deeper transfers, squad hub, saves, leagues and table zones. */
+(()=>{
+  const addLeagues={
+    Belgium:{league:"Belgian Pro League",cup:"Belgian Cup",clubs:["Anderlecht","Antwerp","Club Brugge","Genk","Gent","Mechelen","OH Leuven","Standard Liege","Union SG","Charleroi","Cercle Brugge","Kortrijk","Sint-Truiden","Westerlo","Dender","Beerschot"]},
+    Turkey:{league:"Super Lig",cup:"Turkish Cup",clubs:["Galatasaray","Fenerbahce","Besiktas","Trabzonspor","Basaksehir","Adana Demirspor","Antalyaspor","Alanyaspor","Kasimpasa","Konyaspor","Kayserispor","Samsunspor","Rizespor","Goztepe","Eyupspor","Gaziantep"]},
+    Scotland:{league:"Scottish Premiership",cup:"Scottish Cup",clubs:["Celtic","Rangers","Aberdeen","Hearts","Hibernian","Dundee United","Motherwell","Dundee","Kilmarnock","St Mirren","Ross County","Livingston"]},
+    Austria:{league:"Austrian Bundesliga",cup:"Austrian Cup",clubs:["Red Bull Salzburg","Rapid Wien","Austria Wien","Sturm Graz","LASK","Wolfsberger","Hartberg","Altach","Austria Klagenfurt","WSG Tirol","Blau-Weiss Linz","Grazer AK"]},
+    Switzerland:{league:"Swiss Super League",cup:"Swiss Cup",clubs:["Basel","Young Boys","Zurich","Servette","Lugano","St Gallen","Sion","Grasshoppers","Luzern","Lausanne","Yverdon","Winterthur"]},
+    Greece:{league:"Super League Greece",cup:"Greek Cup",clubs:["Olympiacos","Panathinaikos","AEK Athens","PAOK","Aris","Atromitos","OFI","Asteras Tripolis","Volos","Panetolikos","Lamia","Levadiakos"]},
+    Denmark:{league:"Danish Superliga",cup:"Danish Cup",clubs:["FC Copenhagen","Brondby","Midtjylland","Nordsjaelland","Aarhus","Randers","Silkeborg","Viborg","Odense","Aalborg","Sonderjyske","Lyngby"]},
+    Mexico:{league:"Liga MX",cup:"Liga MX Cup",clubs:["America","Atlas","Atletico San Luis","Cruz Azul","Guadalajara","Juarez","Leon","Mazatlan","Monterrey","Necaxa","Pachuca","Puebla","Queretaro","Santos Laguna","Tigres","Tijuana","Toluca","UNAM"]},
+    Canada:{league:"Canadian Premier League",cup:"Canadian Championship",clubs:["Forge FC","Cavalry FC","Pacific FC","Vancouver FC","Valour FC","York United","Atletico Ottawa","Halifax Wanderers"]},
+    Japan:{league:"J1 League",cup:"Emperor's Cup",clubs:["Kashima Antlers","Urawa Red Diamonds","Gamba Osaka","Cerezo Osaka","Kawasaki Frontale","Yokohama F Marinos","FC Tokyo","Vissel Kobe","Nagoya Grampus","Sanfrecce Hiroshima","Kashiwa Reysol","Sagan Tosu","Avispa Fukuoka","Kyoto Sanga","Albirex Niigata","Shonan Bellmare","Machida Zelvia","Tokyo Verdy"]},
+    "South Korea":{league:"K League 1",cup:"Korean FA Cup",clubs:["Jeonbuk Hyundai","Ulsan HD","FC Seoul","Suwon FC","Pohang Steelers","Gwangju FC","Daegu FC","Daejeon Hana","Jeju SK","Gangwon FC","Gimcheon Sangmu","Incheon United"]},
+    Australia:{league:"A-League Men",cup:"Australia Cup",clubs:["Sydney FC","Melbourne Victory","Melbourne City","Western United","Adelaide United","Brisbane Roar","Perth Glory","Wellington Phoenix","Macarthur FC","Western Sydney Wanderers","Central Coast Mariners","Newcastle Jets"]},
+    "Saudi Arabia":{league:"Saudi Pro League",cup:"King Cup",clubs:["Al Hilal","Al Nassr","Al Ittihad","Al Ahli","Al Ettifaq","Al Shabab","Al Qadsiah","Al Fateh","Al Taawoun","Al Riyadh","Al Khaleej","Damac","Al Raed","Al Okhdood","Al Wehda","Al Kholood"]},
+    Morocco:{league:"Botola Pro",cup:"Moroccan Throne Cup",clubs:["Wydad","Raja Casablanca","FAR Rabat","FUS Rabat","RS Berkane","Moghreb Tetouan","Olympic Safi","Hassania Agadir","Renaissance Zemamra","Ittihad Tanger","MAS Fes","Chabab Mohammedia"]},
+    "South Africa":{league:"South African Premiership",cup:"Nedbank Cup",clubs:["Mamelodi Sundowns","Orlando Pirates","Kaizer Chiefs","AmaZulu","Cape Town City","SuperSport United","Stellenbosch","Sekhukhune United","Polokwane City","Golden Arrows","TS Galaxy","Royal AM","Richards Bay","Chippa United","Marumo Gallants","Siwelele"]},
+  };
+  Object.assign(footballWorld,addLeagues);
+  const euTop5=["England","Spain","Germany","Italy","France"];
+  const europeCountries=new Set(["England","Spain","Germany","Italy","France","Portugal","Netherlands","Belgium","Turkey","Scotland","Austria","Switzerland","Greece","Denmark","Norway","Sweden","Poland","Ukraine","Armenia"]);
+  const northAmerica=new Set(["USA","Canada","Mexico"]);
+  Object.assign(leagueMatches,{Belgium:30,Turkey:34,Scotland:38,Austria:32,Switzerland:38,Greece:26,Denmark:32,Mexico:34,Canada:28,Japan:38,"South Korea":33,Australia:26,"Saudi Arabia":34,Morocco:30,"South Africa":30});
+  Object.assign(continental,{Belgium:"UEFA Champions League / Europa League / Conference League",Turkey:"UEFA Champions League / Europa League / Conference League",Scotland:"UEFA Champions League / Europa League / Conference League",Austria:"UEFA Champions League / Europa League / Conference League",Switzerland:"UEFA Champions League / Europa League / Conference League",Greece:"UEFA Champions League / Europa League / Conference League",Denmark:"UEFA Champions League / Europa League / Conference League",Mexico:"CONCACAF Champions Cup / CONCACAF Central American Cup",Canada:"CONCACAF Champions Cup",USA:"CONCACAF Champions Cup",Japan:"AFC Champions League", "South Korea":"AFC Champions League",Australia:"AFC Champions League", "Saudi Arabia":"AFC Champions League",Morocco:"CAF Champions League / CAF Confederation Cup","South Africa":"CAF Champions League / CAF Confederation Cup"});
+  const oldLeagueInfo=leagueInfo;
+  window.leagueInfo=function(){let base=footballWorld[s.nation]||footballWorld.England;if((s.division||1)>1&&lowerDivisions[s.nation]?.[s.division])return {league:lowerDivisions[s.nation][s.division].league,cup:base.cup,clubs:lowerDivisions[s.nation][s.division].clubs};return base};
+  window.availableDivisions=function(n){return Object.keys({1:footballWorld[n],...(lowerDivisions[n]||{})}).map(Number)};
+  function zoneFor(pos,total){
+    let maxDiv=availableDivisions(s.nation).length;
+    if(s.division>1&&pos<=2)return ["zone-promo","↑ PROMOTION"];
+    if(pos===1)return ["zone-champion","🏆 CHAMPION"];
+    if(pos<=4)return ["zone-ucl","UCL"];
+    if(pos===5)return ["zone-uel","UEL"];
+    if(pos===6)return ["zone-ucel","UCEL"];
+    if(s.division<maxDiv&&pos>total-2)return ["zone-relegation","↓ RELEGATION"];
+    return ["",""];
+  }
+  window.renderStandings=function(){
+    let info=leagueInfo();if(!s||!s.club){$("standings").innerHTML="<p class='small'>Choose a club to see the table.</p>";return}
+    if(!s.leagueTable)initializeLeague();
+    let rows=info.clubs.map(c=>{let t=s.leagueTable[c]||{p:0,gd:0};return{c,p:t.p,gd:t.gd}});
+    let me=s.leagueTable[s.club];if(me){me.p=s.points;me.gd=s.gd}
+    rows.sort((a,b)=>b.p-a.p||b.gd-a.gd||a.c.localeCompare(b.c));s.tablePos=Math.max(1,rows.findIndex(x=>x.c===s.club)+1);
+    let total=rows.length;
+    $("standings").innerHTML='<table class="table"><tr><th>#</th><th>Club</th><th>Pts</th><th>GD</th></tr>'+rows.map((r,i)=>{let [z,l]=zoneFor(i+1,total);return '<tr class="'+(r.c===s.club?"me ":"")+z+'"><td>'+(i+1)+'</td><td><div class="clubRow">'+clubBadge(r.c)+r.c+' <span class="zone-label">'+l+'</span></div></td><td>'+r.p+'</td><td>'+r.gd+'</td></tr>'}).join("")+"</table><p class='small' style='margin-top:10px'>🟨 Champion • 🟦 UCL • 🟧 UEL • 🟩 UCEL • 🟢 Promotion • 🟥 Relegation</p>";
+  };
+  function squad(){
+    s.squad=s.squad||[];
+    if(!s.squad.length){
+      const pos=["GK","RB","CB","CB","LB","CM","CM","CAM","RW","ST","LW","GK","CB","CM","ST","LB","RW","CDM"];
+      s.squad=pos.map((p,i)=>({name:["Alex Morgan","Luca Silva","Noah Martin","Daniel Costa","Ethan Smith","Marco Rossi","Leo Santos","Milan Petrov","Ryan Wilson","Mateo Diaz","Andre Lima","Jonas Berg","Nico Garcia","Adam Novak","David Okoro","Sam Brown","Owen Clark","Ivan Markovic"][i],position:p,ovr:Math.max(55,Math.min(84,s.ovr-4+Math.floor(Math.random()*10))),age:17+Math.floor(Math.random()*14),goals:0,assists:0,apps:0,contractYears:1+Math.floor(Math.random()*4),wage:3000+Math.floor(Math.random()*17000)}));
+      save();
+    }
+    const list=$("squadList");
+    list.innerHTML=s.squad.map((p,i)=>'<div class="squadPlayer"><div class="top"><div><b>'+p.name+'</b><br><span class="small">'+p.position+' • Age '+p.age+'</span></div><span class="ov">'+p.ovr+'</span></div><div class="small">Apps '+p.apps+' • G '+p.goals+' • A '+p.assists+'<br>Contract: '+p.contractYears+'y • $'+p.wage.toLocaleString()+'/wk</div></div>').join("");
+    $("squadTitle").textContent=s.club+" Squad";
+  }
+  const squadScreen=document.createElement("section");squadScreen.id="squadScreen";squadScreen.className="screen";squadScreen.innerHTML='<div class="top"><h2>👥 Squad Hub</h2><button class="secondary" id="squadBack">← Career</button></div><div class="card"><h2 id="squadTitle">Squad</h2><p class="small">See teammates, positions, ratings, season stats and contract details.</p><div id="squadList" class="squadGrid"></div></div>';
+  $("career").parentNode.insertBefore(squadScreen,$("career").nextSibling);
+  $("squadHubBtn").onclick=()=>{squad();show("squadScreen")};$("squadBack").onclick=()=>{draw();show("career")};
+  $("saveCareerBtn").onclick=()=>{save();$("saveCareerBtn").textContent="✅ SAVED";setTimeout(()=>$("saveCareerBtn").textContent="💾 SAVE CAREER",1200)};
+  const oldSave=save;window.save=function(){oldSave();try{localStorage.setItem("pscLastSave",new Date().toISOString())}catch(e){}};
+  function transferClubPool(){return Object.values(footballWorld).flatMap(x=>x.clubs).filter(x=>x!==s.club).filter((x,i,a)=>a.indexOf(x)===i)}
+  window.showTransferOffers=function(){
+    let pool=transferClubPool().sort(()=>Math.random()-.5).slice(0,4);$("transferChoices").innerHTML="";
+    pool.forEach(club=>{let strength=Math.max(0,Math.min(15,Math.floor(Math.random()*16)+(s.ovr-70)/4));let wage=Math.round((s.wage||10000)*(0.8+strength/10));let b=document.createElement("div");b.className="negOffer";b.innerHTML='<div><b>'+club+'</b><br><span class="small">Initial offer: $'+wage.toLocaleString()+'/week • '+(1+Math.floor(Math.random()*4))+' years<br>They want you — you can counter their offer.</span></div><button class="primary">NEGOTIATE</button>';b.querySelector("button").onclick=()=>openTransferNegotiation(club,wage);$("transferChoices").appendChild(b)});show("transferScreen");
+  };
+  window.openTransferNegotiation=function(club,wage){
+    pendingTransferClub=club;s.negotiationClub=club;s.negotiationBaseWage=wage;
+    $("contractYears").value="3";$("contractWage").value=wage;$("contractOffer").innerHTML="<b>"+club+"</b> want to sign you.<br><span class='small'>Initial wage: $"+wage.toLocaleString()+"/week. Set your years and counter-wage, then submit.</span>";$("contractResult").textContent="Counteroffers are possible. Asking far above the club's range may make them walk away.";show("contractScreen");
+  };
+  $("acceptContract").onclick=()=>{
+    if(pendingTransferClub){
+      let club=pendingTransferClub,years=Number($("contractYears").value)||3,wage=Math.max(1000,Number($("contractWage").value)||10000),base=s.negotiationBaseWage||wage;
+      let ratio=wage/base;
+      if(ratio<=1.15||Math.random()<0.58){
+        s.contractYears=years;s.wage=wage;s.club=club;s.teams=s.teams||[];if(!s.teams.includes(club))s.teams.push(club);s.fixtures=buildFixtures();s.fixtureIndex=Math.min(s.fixtureIndex||0,s.fixtures.length-1);s.opponent=pickOpponent();addMail("🤝 Contract agreed",club+" accepted your negotiation: "+years+" years at $"+wage.toLocaleString()+"/week.");pendingTransferClub=null;delete s.negotiationClub;save();$("contractResult").textContent="Deal accepted! "+club+" signed you.";setTimeout(()=>{draw();show("career")},700);
+      }else{$("contractResult").textContent=club+" rejected the counteroffer. Try a lower wage or another club."}
+      return;
+    }
+    s.contractYears=Number($("contractYears").value)||1;s.wage=Math.max(1000,Number($("contractWage").value)||10000);s.seasonM=0;s.seasonG=0;s.seasonA=0;s.points=0;s.fixtureIndex=0;s.fixtures=buildFixtures();s.opponent=pickOpponent();save();draw();show("career");
+  };
+  /* Add more interesting match outcomes without changing the existing playable moment system. */
+  const oldResolve=resolveMoment;
+  window.resolveMoment=function(label,val,key,chance,successGain=.5,failLoss=.35){
+    oldResolve(label,val,key,chance,successGain,failLoss);
+    if(Math.random()<.10&&s.inbox) addMail("📞 Manager feedback",["Your manager praised your movement.","The coaching staff want more intensity.","Scouts are watching your recent form."][Math.floor(Math.random()*3)]);
+  };
+  const oldFinish=finishMatch;
+  window.finishMatch=function(){oldFinish();if(s&&s.seasonM>0&&s.seasonM%5===0){s.inbox=s.inbox||[];addMail("📊 Season checkpoint","Your form is being reviewed. Keep performing to improve future transfer interest.");save()}};
+  window.addEventListener("beforeunload",()=>{if(s)save()});
+  if(s){migrateCareer();save()}
+})();
 </script>
 </main>
 </body>
